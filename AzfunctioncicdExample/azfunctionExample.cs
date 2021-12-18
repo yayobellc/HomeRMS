@@ -31,7 +31,7 @@ namespace AzfunctioncicdExample
             var environment = config["Environment"];
 
 
-            return new OkObjectResult($"Hello {environment}");
+            return new OkObjectResult($"Hello Yoseph {environment}");
         }
     }
 }
