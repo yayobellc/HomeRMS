@@ -27,10 +27,11 @@ namespace AzfunctioncicdExample
              .AddEnvironmentVariables()
              .Build();
 
-            string appsettingvalue = config["ConnectionStrings:DefaultConnection"];
+            //string appsettingvalue = config["ConnectionStrings:DefaultConnection"];
+            var environment = config["Environment"];
 
 
-            return new OkObjectResult($"Hello{appsettingvalue}");
+            return new OkObjectResult($"Hello {environment}");
         }
     }
 }
