@@ -7,6 +7,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Configuration;
 
 namespace AzfunctioncicdExample
 {
@@ -14,19 +15,22 @@ namespace AzfunctioncicdExample
     {
         [FunctionName("azfunctionExample")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req, ExecutionContext context,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+            var config = new ConfigurationBuilder()
+             .SetBasePath(context.FunctionAppDirectory)
+             // This gives you access to your application settings
+             // in your local development environment:
+             .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
+             // This is what actually gets you the application settings in Azure
+             .AddEnvironmentVariables()
+             .Build();
 
-          
+            string appsettingvalue = config["ConnectionStrings:DefaultConnection"];
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
 
-            string responseMessage = "This HTTP triggered function executed successfully";
-
-            return new OkObjectResult(responseMessage);
+            return new OkObjectResult($"Hello{appsettingvalue}");
         }
     }
 }
